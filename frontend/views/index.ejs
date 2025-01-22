@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kana Quiz</title>
+  <style>
+    body {
+      font-family: "Noto Sans JP", sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1598555922078-4b564e2b6b85'); /* Optional: Add a Japanese-themed background image */
+      background-size: cover;
+      background-position: center;
+      color: #333;
+    }
+
+    #app {
+      background-color: rgba(255, 255, 255, 0.8); /* Light transparent background for text visibility */
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      font-family: 'Yu Gothic', sans-serif; /* Japanese-inspired font */
+    }
+
+    #quiz {
+      background-color: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    #kana {
+      font-size: 60px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 20px 0;
+    }
+
+    #answer {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-family: 'Noto Sans JP', sans-serif; /* Japanese-inspired font */
+    }
+
+    #answer:focus {
+      border-color: #007BFF;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .result.correct {
+      color: #28a745; /* Green for correct answers */
+    }
+
+    .result.incorrect {
+      color: #dc3545; /* Red for incorrect answers */
+    }
+
+    .streak {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .streak span {
+      font-size: 20px;
+      color: #f39c12; /* Orange for streak count */
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      #kana {
+        font-size: 48px;
+      }
+
+      button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Kana Quiz</h1>
+    <div id="quiz">
+      <p>What is the romaji for: <span id="kana"><%= currentKana %></span>?</p>
+      <form action="/" method="POST">
+        <input type="hidden" name="currentKana" value="<%= currentKana %>" />
+        <input
+          type="text"
+          id="answer"
+          name="userAnswer"
+          placeholder="Type the romaji here"
+          value="<%= userAnswer %>"
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
+      <p class="result <%= resultMessage === 'Correct!' ? 'correct' : 'incorrect' %>"><%= resultMessage %></p>
+
+      <!-- Display streak -->
+      <div class="streak">
+        Streak: <span><%= streak %></span> correct answers in a row!
+      </div>
+    </div>
+  </div>
+</body>
+</html>

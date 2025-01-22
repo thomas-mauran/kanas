@@ -11,25 +11,28 @@
         @keyup.enter="checkAnswer"
       />
       <button @click="checkAnswer">Submit</button>
-      <p id="result">{{ resultMessage }}</p>
+      <p id="result" :class="{ correct: isCorrect, incorrect: isIncorrect }">{{ resultMessage }}</p>
     </div>
   </div>
 </template>
 
 <script>
+const { data } = await useFetch('/api/data')
+
 export default {
   data() {
     return {
-      backendUrl: import.meta.env.VITE_BACKEND_URL, // Use the VITE_BACKEND_URL environment variable
       currentKana: '',
       userAnswer: '',
       resultMessage: '',
+      isCorrect: false,
+      isIncorrect: false,
     };
   },
-  // Use `asyncData` for SSR to fetch data before rendering
-  async asyncData({ env }) {
-    const backendUrl = env.VITE_BACKEND_URL;
+  async asyncData({ $config }) {
+    const backendUrl = $config.public.backendUrl; // Access runtimeConfig
     try {
+      console.log('backendUrl:', backendUrl);
       const response = await fetch(`${backendUrl}/kana`);
       const data = await response.json();
       return { currentKana: data.kana };
@@ -41,12 +44,15 @@ export default {
   methods: {
     async fetchKana() {
       try {
-        console.log('backendUrl:', this.backendUrl);
-        const response = await fetch(`${this.backendUrl}/kana`);
+        const backendUrl = this.$config.public.backendUrl;
+        console.log('backendUrl:', backendUrl);
+        const response = await fetch(`${backendUrl}/kana`);
         const data = await response.json();
         this.currentKana = data.kana;
         this.resultMessage = '';
         this.userAnswer = '';
+        this.isCorrect = false;
+        this.isIncorrect = false;
       } catch (error) {
         console.error('Error fetching Kana:', error);
         this.resultMessage = 'Error fetching Kana.';
@@ -54,12 +60,15 @@ export default {
     },
     async checkAnswer() {
       try {
-        const response = await fetch(`${this.backendUrl}/kana/check`, {
+        const backendUrl = this.$config.public.backendUrl;
+        const response = await fetch(`${backendUrl}/kana/check`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ kana: this.currentKana, romaji: this.userAnswer }),
         });
         const data = await response.json();
+        this.isCorrect = data.correct;
+        this.isIncorrect = !data.correct;
         this.resultMessage = data.correct ? 'Correct!' : 'Incorrect, try again.';
         if (data.correct) {
           this.fetchKana(); // Fetch a new kana after correct answer
@@ -67,19 +76,11 @@ export default {
       } catch (error) {
         console.error('Error checking answer:', error);
         this.resultMessage = 'Error checking answer.';
+        this.isCorrect = false;
+        this.isIncorrect = true;
       }
     },
   },
-  // Use `created` only for client-side data fetching
-  created() {
-    if (!this.currentKana) {
-      this.fetchKana();
-    }
-  },
-  mounted() {
-    console.log('Hydrated on the client');
-  }
-
 };
 </script>
 
@@ -164,11 +165,11 @@ button:hover {
 }
 
 #result.correct {
-  color: #28a745; /* Green for correct answers */
+  color: #28a745;
 }
 
 #result.incorrect {
-  color: #dc3545; /* Red for incorrect answers */
+  color: #dc3545;
 }
 
 @media (max-width: 480px) {

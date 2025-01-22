@@ -1,20 +1,21 @@
-# Use an official Node.js image
-FROM node:18
+# Step 1: Use the official Nginx image from the Docker Hub
+FROM node:latest
 
-# Set the working directory in the container
+# Step 2: Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
-COPY package*.json ./
+# Step 3: Copy the package.json file to the working directory
 
-# Install dependencies
+COPY package.json /app
+
+# Step 4: Install the dependencies
 RUN npm install
 
-# Copy the rest of the application code
-COPY . .
+# Step 5: Copy the rest of the application code to the working directory
+COPY . /app
 
-# Expose the port that Vite's development server uses
-EXPOSE 5173
+# Step 6: Expose the port that the application will run on
+EXPOSE 80
 
-# Command to run the development server
-CMD ["npm", "run", "dev", "--", "--host"]
+# Step 7: Start the application
+CMD ["node", "app.mjs"]
