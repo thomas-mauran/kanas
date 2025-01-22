@@ -1,11 +1,20 @@
-# Step 1: Use the official Nginx image from the Docker Hub
-FROM nginx:alpine
+# Use an official Node.js image
+FROM node:18
 
-# Step 2: Copy the local HTML files into the container's nginx server
-COPY ./index.html /usr/share/nginx/html/index.html
+# Set the working directory in the container
+WORKDIR /app
 
-# Step 3: Expose port 80 so that the container is accessible
-EXPOSE 80
+# Copy package.json and package-lock.json to install dependencies
+COPY package*.json ./
 
-# Step 4: No need to define CMD as the default command for nginx is already set
-# Nginx will serve the static files on port 80 by default
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port that Vite's development server uses
+EXPOSE 5173
+
+# Command to run the development server
+CMD ["npm", "run", "dev", "--", "--host"]
