@@ -30,6 +30,15 @@
       text-align: center;
     }
 
+    #red-dot{
+      position: absolute;
+      border-radius: 100%;
+      background-color: red;
+      width: 25%;
+      height: 50%;
+      z-index: -1;
+    }
+
     h1 {
       font-size: 2.5rem;
       font-weight: bold;
@@ -133,6 +142,7 @@
   </style>
 </head>
 <body>
+  <div id="red-dot"></div>
   <div id="app">
     <h1>Kana Quiz</h1>
     <div id="quiz">
