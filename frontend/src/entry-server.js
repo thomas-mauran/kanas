@@ -1,6 +1,7 @@
 import { createApp } from './main';
 
-export function render(url) {
+export async function render(url, context) {
   const { app } = createApp();
-  return app.renderToString(); 
+  console.log(`[SSR] Rendering URL: ${url}`); // Log each server-side render
+  return app;
 }

@@ -76,6 +76,10 @@ export default {
       this.fetchKana();
     }
   },
+  mounted() {
+    console.log('Hydrated on the client');
+  }
+
 };
 </script>
 
