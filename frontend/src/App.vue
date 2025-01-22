@@ -26,15 +26,22 @@ export default {
       resultMessage: '',
     };
   },
-  created() {
-    console.log('Backend URL:', this.backendUrl);
-
-    // Fetch the first kana
-    this.fetchKana();
+  // Use `asyncData` for SSR to fetch data before rendering
+  async asyncData({ env }) {
+    const backendUrl = env.VITE_BACKEND_URL;
+    try {
+      const response = await fetch(`${backendUrl}/kana`);
+      const data = await response.json();
+      return { currentKana: data.kana };
+    } catch (error) {
+      console.error('Error fetching Kana:', error);
+      return { currentKana: 'Error fetching Kana' };
+    }
   },
   methods: {
     async fetchKana() {
       try {
+        console.log('backendUrl:', this.backendUrl);
         const response = await fetch(`${this.backendUrl}/kana`);
         const data = await response.json();
         this.currentKana = data.kana;
@@ -63,8 +70,15 @@ export default {
       }
     },
   },
+  // Use `created` only for client-side data fetching
+  created() {
+    if (!this.currentKana) {
+      this.fetchKana();
+    }
+  },
 };
 </script>
+
 <style>
 body {
   font-family: 'Roboto', Arial, sans-serif;
