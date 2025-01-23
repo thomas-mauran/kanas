@@ -1,0 +1,18 @@
+#
+name: kanas-backend
+namespace: app
+
+replicaCount: 1
+
+image:
+  repository:  ghcr.io/thomas-mauran/kana-backend
+  pullPolicy: Always
+  tag: 'latest'
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

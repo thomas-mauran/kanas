@@ -1,0 +1,15 @@
+#
+ProjectName: kanas
+
+#
+applications:
+- name: kanas-frontend
+  namespace: thomas
+  repoURL: https://github.com/thomas-mauran/kanas
+  chart: frontend/.helm/kanas-frontend
+  server: https://kubernetes.default.svc
+- name: kanas-backend
+  namespace: thomas
+  repoURL: https://github.com/thomas-mauran/kanas
+  chart: backend/.helm/kanas-backend
+  server: https://kubernetes.default.svc
