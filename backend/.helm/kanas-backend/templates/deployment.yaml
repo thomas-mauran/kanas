@@ -20,10 +20,10 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-          {{ toYaml .Values.resources | indent 10 }}  # Adjusted to match YAML indentation
+{{ toYaml .Values.resources | indent 10 }}  # Correct indentation
         ports:
         - name: http
           containerPort: 80
           protocol: TCP
         env:
-          {{ toYaml .Values.env | indent 10 }}  # Adjusted to match YAML indentation
+{{ toYaml .Values.env | indent 10 }}  # Correct indentation
