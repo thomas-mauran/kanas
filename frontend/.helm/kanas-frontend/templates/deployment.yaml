@@ -19,11 +19,13 @@ spec:
     spec:
       containers:
       - name: {{ .Values.name }}
-        resources: {{ toYaml .Values.resources | nindent 10 }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}  # Correct indentation
         ports:
         - name: http
           containerPort: 80
           protocol: TCP
-        env: {{ toYaml .Values.env | nindent 8 }}
+        env:
+{{ toYaml .Values.env | indent 10 }}  # Correct indentation
