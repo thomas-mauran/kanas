@@ -4,7 +4,7 @@ import fetch from "node-fetch"; // Now using import instead of require
 
 const app = express();
 const PORT = process.env.PORT || 80;
-const BACKEND_URL = process.env.BACKEND_URL;
+const KANAS_BACKEND_SERVICE_HOST = process.env.KANAS_BACKEND_SERVICE_HOST;
 
 // Streak variables
 let streak = 0; // Initialize streak counter
@@ -18,8 +18,8 @@ app.set("view engine", "ejs");
 // Routes
 app.get("/", async (req, res) => {
   try {
-    console.log("Fetching Kana...", BACKEND_URL);
-    const response = await fetch(`${BACKEND_URL}/kana`);
+    console.log("Fetching Kana...", KANAS_BACKEND_SERVICE_HOST);
+    const response = await fetch(`${KANAS_BACKEND_SERVICE_HOST}/kana`);
     const data = await response.json();
     res.render("index", { 
       currentKana: data.kana, 
@@ -44,7 +44,7 @@ app.post("/", async (req, res) => {
   
   try {
     // Check if the answer is correct
-    const response = await fetch(`${BACKEND_URL}/kana/check`, {
+    const response = await fetch(`${KANAS_BACKEND_SERVICE_HOST}/kana/check`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ kana: currentKana, romaji: userAnswer }),
@@ -68,7 +68,7 @@ app.post("/", async (req, res) => {
     }
 
     // Fetch new Kana after each attempt
-    const newKanaResponse = await fetch(`${BACKEND_URL}/kana`);
+    const newKanaResponse = await fetch(`${KANAS_BACKEND_SERVICE_HOST}/kana`);
     const newKanaData = await newKanaResponse.json();
 
     res.render("index", { 
