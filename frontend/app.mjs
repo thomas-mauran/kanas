@@ -52,7 +52,7 @@ app.post("/", async (req, res) => {
     const data = await response.json();
 
     if (data.correct) {
-      resultMessage = "Correct! Here's another one:";
+      resultMessage = "Correct!";
 
       // Update streak if the answer is correct
       if (previousAnswerCorrect) {
