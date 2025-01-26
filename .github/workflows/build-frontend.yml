@@ -30,6 +30,16 @@ jobs:
     - name: Build frontend image
       run: docker build -t ghcr.io/${{ github.repository_owner }}/kana-frontend:latest -f ./frontend/Dockerfile ./frontend
 
+    # Tag frontend image with commit SHA
+    - name: Tag frontend image
+      run: docker tag ghcr.io/${{ github.repository_owner }}/kana-frontend:latest ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ github.sha }}
+
     # Push frontend image
     - name: Push frontend image
-      run: docker push ghcr.io/${{ github.repository_owner }}/kana-frontend:latest
+      run: docker push ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ github.sha }}
+
+    # Modify the helm values to use the new image tag
+    - name: Modify helm values
+      run: |
+        sed -i "s/tag: '[^']*'/tag: '${{ github.sha }}'/g" ./frontend/.helm/kanas-frontend/values.yaml
+
