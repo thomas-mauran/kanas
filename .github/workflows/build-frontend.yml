@@ -18,6 +18,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Get the commit hash
+    - name: Set outputs
+      id: vars
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
     # Log in to GitHub Container Registry
     - name: Log in to GHCR
       uses: docker/login-action@v2
@@ -32,14 +37,14 @@ jobs:
 
     # Tag frontend image with commit SHA
     - name: Tag frontend image
-      run: docker tag ghcr.io/${{ github.repository_owner }}/kana-frontend:latest ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ github.sha }}
+      run: docker tag ghcr.io/${{ github.repository_owner }}/kana-frontend:latest ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ steps.vars.outputs.sha_short }}
 
     # Push frontend image
     - name: Push frontend image
-      run: docker push ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ github.sha }}
+      run: docker push ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ steps.vars.outputs.sha_short }}
 
     # Modify the helm values to use the new image tag
     - name: Modify helm values
       run: |
-        sed -i "s/tag: '[^']*'/tag: '${{ github.sha }}'/g" ./frontend/.helm/kanas-frontend/values.yaml
+        sed -i "s/tag: '[^']*'/tag: '${{ steps.vars.outputs.sha_short }}'/g" ./frontend/.helm/kanas-frontend/values.yaml
 
