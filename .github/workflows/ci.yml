@@ -68,5 +68,7 @@ jobs:
     - name: Commit and push changes
       uses: devops-infra/action-commit-push@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}  # Use PAT here
-        commit_message: "CI(Update): values charts -> tag"
+        github_token: "${{ secrets.GITHUB_TOKEN }}"
+        add_timestamp: true
+        commit_prefix: "[AUTO]"
+        commit_message: "Automatic update of the helm values"
