@@ -64,9 +64,12 @@ jobs:
       run: |
         sed -i "s/tag: '[^']*'/tag: '${{ steps.vars.outputs.sha_short }}'/g" ./backend/.helm/kanas-backend/values.yaml
 
-    ## COMMIT CHANGE
-    - name: Commit and push changes
-      uses: devops-infra/action-commit-push@master
-      with:
-        github_token: ${{ secrets.GH_SECRET }}  # Use the newly created PAT here
-        commit_message: "CI(Update): values charts -> tag"
+    # Commit and push modified helm values
+    - name: Commit and push changes to values.yaml
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add ./frontend/.helm/kanas-frontend/values.yaml
+        git add ./backend/.helm/kanas-backend/values.yaml
+        git commit -m "[ACTION]: helm values.yaml with new image tag"
+        git push
