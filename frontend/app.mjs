@@ -18,8 +18,8 @@ app.set("view engine", "ejs");
 // Routes
 app.get("/", async (req, res) => {
   try {
-    console.log("Fetching Kana...", KANAS_BACKEND_SERVICE_HOST);
-    const response = await fetch(`${KANAS_BACKEND_SERVICE_HOST}/kana`);
+    console.log("Fetching Kana...", `http://${KANAS_BACKEND_SERVICE_HOST}/kana`);
+    const response = await fetch(`http://${KANAS_BACKEND_SERVICE_HOST}/kana`);
     const data = await response.json();
     res.render("index", { 
       currentKana: data.kana, 
