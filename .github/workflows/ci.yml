@@ -68,7 +68,7 @@ jobs:
     - name: Commit and push changes
       uses: devops-infra/action-commit-push@master
       with:
-        github_token: "${{ secrets.GITHUB_TOKEN }}"
+        github_token: "${{ secrets.GH_SECRET }}"
         add_timestamp: true
         commit_prefix: "[AUTO]"
         commit_message: "Automatic update of the helm values"
