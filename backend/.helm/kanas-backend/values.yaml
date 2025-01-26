@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository:  ghcr.io/thomas-mauran/kana-backend
   pullPolicy: Always
-  tag: '2fa085a'
+  tag: 'a3291e1'
 
 resources:
   limits:
