@@ -68,5 +68,5 @@ jobs:
     - name: Commit and push changes
       uses: devops-infra/action-commit-push@master
       with:
-        github_token: ${{ secrets.GH_SECRET }}
+        github_token: ${{ secrets.GH_SECRET }}  # Use the newly created PAT here
         commit_message: "CI(Update): values charts -> tag"
