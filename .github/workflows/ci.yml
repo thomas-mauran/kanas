@@ -1,4 +1,4 @@
-name: Build and Push Frontend Docker Image
+name: Build and Push Docker Images
 
 on:
   push:
@@ -6,9 +6,8 @@ on:
       - main
 
 jobs:
-  build-and-push-frontend:
+  build-and-push:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
@@ -39,12 +38,35 @@ jobs:
     - name: Tag frontend image
       run: docker tag ghcr.io/${{ github.repository_owner }}/kana-frontend:latest ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ steps.vars.outputs.sha_short }}
 
+    # Build backend image
+    - name: Build backend image
+      run: docker build -t ghcr.io/${{ github.repository_owner }}/kana-backend:latest -f ./backend/Dockerfile ./backend
+
+    # Tag backend image with commit SHA
+    - name: Tag backend image
+      run: docker tag ghcr.io/${{ github.repository_owner }}/kana-backend:latest ghcr.io/${{ github.repository_owner }}/kana-backend:${{ steps.vars.outputs.sha_short }}
+
     # Push frontend image
     - name: Push frontend image
       run: docker push ghcr.io/${{ github.repository_owner }}/kana-frontend:${{ steps.vars.outputs.sha_short }}
 
-    # Modify the helm values to use the new image tag
-    - name: Modify helm values
+    # Push backend image
+    - name: Push backend image
+      run: docker push ghcr.io/${{ github.repository_owner }}/kana-backend:${{ steps.vars.outputs.sha_short }}
+
+    # Modify helm values for frontend
+    - name: Modify frontend helm values
       run: |
         sed -i "s/tag: '[^']*'/tag: '${{ steps.vars.outputs.sha_short }}'/g" ./frontend/.helm/kanas-frontend/values.yaml
 
+    # Modify helm values for backend
+    - name: Modify backend helm values
+      run: |
+        sed -i "s/tag: '[^']*'/tag: '${{ steps.vars.outputs.sha_short }}'/g" ./backend/.helm/kanas-backend/values.yaml
+
+    ## COMMIT CHANGE
+    - name: Commit and push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_message: "CI(Update): values charts -> tag"
