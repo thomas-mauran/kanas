@@ -1,20 +1,20 @@
-# Step 1: Use the official Node.js image as a base image
-FROM node:16
+# Stage 1: Build the application
+FROM node:16-alpine AS build
 
-# Step 2: Set the working directory in the container
 WORKDIR /app
 
-# Step 3: Copy package.json and package-lock.json (if available)
 COPY package*.json ./
+RUN npm ci
 
-# Step 4: Install dependencies
-RUN npm install
-
-# Step 5: Copy the rest of the application files into the container
 COPY . .
 
-# Step 6: Expose the port that the app will run on
+# Stage 2: Run the application with a smaller image
+FROM node:16-alpine
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
 EXPOSE 80
 
-# Step 7: Define the command to start the Node.js server
 CMD ["node", "backend.js"]
